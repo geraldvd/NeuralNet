@@ -22,6 +22,9 @@ Net::Net(const std::vector<unsigned> &topology)
             std::cout << "Made a Neuron!" << std::endl;
         }
 
+        // Force the bias node's output value to 1.0;
+        m_layers.back().back().setOutputVal(1.0);
+
     }
 
 }
@@ -119,4 +122,14 @@ std::vector<double> Net::getResults() const
     }
 
     return resultVals;
+}
+
+double Net::getRecentAverageError() const
+{
+    return m_recentAverageError;
+}
+
+void Net::setRecentAverageError(const double &recentAverageError)
+{
+    m_recentAverageError = recentAverageError;
 }

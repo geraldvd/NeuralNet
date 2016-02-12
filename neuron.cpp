@@ -88,10 +88,10 @@ void Neuron::updateInputWeights(Layer &prevLayer)
         double newDeltaWeight =
                 // Individual input, magnified by the gradient train rate
                 eta
-                * neuron_getOutputVal()  // TODO Solve error
+                * neuron.getOutputVal()  // TODO Correct?
                 * m_gradient
                 // Also add momentum = a fraction of the previous delta weight
-                * alpha
+                + alpha
                 * oldDeltaWeight;
 
         neuron.m_outputWeights[m_myIndex].deltaWeight = newDeltaWeight;

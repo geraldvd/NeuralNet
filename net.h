@@ -17,6 +17,9 @@ public:
     void backProp(const std::vector<double> &targetVals);        // training function
     std::vector<double> getResults() const;
 
+    double getRecentAverageError() const;
+    void setRecentAverageError(const double &recentAverageError);
+
 private:
     std::vector<Layer> m_layers; // m_layers[layerNum][neuroNum]
     double m_error;
