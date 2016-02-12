@@ -21,6 +21,7 @@ int main()
 
     topology.push_back(1);
     topology.push_back(4);
+    topology.push_back(4);
     topology.push_back(1);
 
     Net myNet(topology);
@@ -29,7 +30,7 @@ int main()
     // Compose random trainingset
 //    cout << "x\ty" << endl;
     vector<pair<vd,vd> > totalTraining;
-    for(int N=0; N<10000; N++) {
+    for(int N=0; N<1000000; N++) {
         vd x = {rand() / double(RAND_MAX)};
         vd y = {sin(2*M_PI*x.at(0))};
         totalTraining.push_back(pair<vd,vd>(x,y));
@@ -40,18 +41,18 @@ int main()
     unsigned counter{0};
     for(auto &t : totalTraining) {
         myNet.feedForward(t.first);
-        cout << "Pass " << ++counter << ": Input: " << t.first.at(0) << endl;
-        cout << "Output: " << myNet.getResults().at(0) << endl;
-        cout << "Target: " << t.second.at(0) << endl;
+//        cout << "Pass " << ++counter << ": Input: " << t.first.at(0) << endl;
+//        cout << "Output: " << myNet.getResults().at(0) << endl;
+//        cout << "Target: " << t.second.at(0) << endl;
         myNet.backProp(t.second);
-        cout << "Net recent average error: " << myNet.getRecentAverageError() << endl << endl;
+//        cout << "Net recent average error: " << myNet.getRecentAverageError() << endl << endl;
     }
 
 
     // Testing
     cout << "Testing: " << endl;
     cout << "x\ty\tyd" << endl;
-    for(double x=0.0; x<=4*M_PI; x+= 0.1) {
+    for(double x=0.0; x<=2*M_PI; x+= 0.1) {
         vd input{x/2/M_PI};
         myNet.feedForward(input);
 
