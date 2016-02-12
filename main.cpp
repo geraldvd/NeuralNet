@@ -3,6 +3,7 @@
 #include <iostream>
 #include <utility>
 #include <ctime>
+#include <cmath>
 
 #include "net.h"
 
@@ -12,70 +13,34 @@ typedef std::vector<double> vd;
 
 int main()
 {
+    // Set RNG seed
     srand(time(NULL));
 
     // e.g., {3, 2, 1} == {3 inputs, 2 hidden neurons (single layer), 1 output}
     vector<unsigned> topology;
 
-    topology.push_back(2);
+    topology.push_back(1);
     topology.push_back(4);
     topology.push_back(1);
 
     Net myNet(topology);
 
-    // Define training set xor
-    vector<pair<vd,vd> > trainingSet;
-    {
-        vd inputVals;
-        inputVals.push_back(0);
-        inputVals.push_back(0);
-        vd targetVals;
-        targetVals.push_back(0);
-        trainingSet.push_back(pair<vd,vd>(inputVals, targetVals));
-    }
-    {
-        vd inputVals;
-        inputVals.push_back(1);
-        inputVals.push_back(0);
-        vd targetVals;
-        targetVals.push_back(1);
-        trainingSet.push_back(pair<vd,vd>(inputVals, targetVals));
-    }
-    {
-        vd inputVals;
-        inputVals.push_back(0);
-        inputVals.push_back(1);
-        vd targetVals;
-        targetVals.push_back(1);
-        trainingSet.push_back(pair<vd,vd>(inputVals, targetVals));
-    }
-    {
-        vd inputVals;
-        inputVals.push_back(1);
-        inputVals.push_back(1);
-        vd targetVals;
-        targetVals.push_back(0);
-        trainingSet.push_back(pair<vd,vd>(inputVals, targetVals));
-    }
 
-    for(unsigned i=0; i<4; i++) {
-        auto &t = trainingSet.at(i);
-        cout << t.first.at(0) << ", "<< t.first.at(1) << ", "<< t.second.at(0) << endl;
-    }
-
-
-    // Compose random trainingset (1000 samples)
+    // Compose random trainingset
+//    cout << "x\ty" << endl;
     vector<pair<vd,vd> > totalTraining;
     for(int N=0; N<10000; N++) {
-        int n = (int)(4.0 * rand() / double(RAND_MAX) );
-        totalTraining.push_back(trainingSet.at(n));
+        vd x = {rand() / double(RAND_MAX)};
+        vd y = {sin(2*M_PI*x.at(0))};
+        totalTraining.push_back(pair<vd,vd>(x,y));
+//        cout << x.at(0) << '\t' << y.at(0) << endl;
     }
 
     // Training
     unsigned counter{0};
     for(auto &t : totalTraining) {
         myNet.feedForward(t.first);
-        cout << "Pass " << ++counter << ": Inputs: " << t.first.at(0) << ' ' << t.first.at(1) << endl;
+        cout << "Pass " << ++counter << ": Input: " << t.first.at(0) << endl;
         cout << "Output: " << myNet.getResults().at(0) << endl;
         cout << "Target: " << t.second.at(0) << endl;
         myNet.backProp(t.second);
@@ -85,14 +50,12 @@ int main()
 
     // Testing
     cout << "Testing: " << endl;
-    cout << "x1\tx2\ty" << endl;
-    for(double i=0.0; i<=1; i+= 0.5) {
-        for(double j=0.0; j<=1; j+= 0.5) {
-            vd input{i,j};
-            myNet.feedForward(input);
+    cout << "x\ty\tyd" << endl;
+    for(double x=0.0; x<=4*M_PI; x+= 0.1) {
+        vd input{x/2/M_PI};
+        myNet.feedForward(input);
 
-            cout << input.at(0) << '\t' << input.at(1) << '\t' << myNet.getResults().at(0) << endl;
-        }
+        cout << input.at(0) << '\t' << myNet.getResults().at(0) << '\t' << sin(x) << endl;
     }
 
     return 0;
